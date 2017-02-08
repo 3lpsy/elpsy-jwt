@@ -1,0 +1,8 @@
+{
+    "require": {
+        "tymon/jwt-auth": "^0.5.10"
+    },
+    "psr-4": {
+        "Elpsy\\JWT\\": "src/"
+    }
+}
