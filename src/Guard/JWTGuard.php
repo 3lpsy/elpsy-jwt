@@ -35,9 +35,6 @@ class JWTGuard implements Guard
     // user provider
     protected $provider;
 
-    // driver config
-    protected $driver;
-
     // log out user without modifying token
     protected $loggedOut;
 
@@ -50,14 +47,17 @@ class JWTGuard implements Guard
     // current token
     protected $token;
 
+    // was a token refresh attempted
     protected $refreshAttempted;
 
+    // token delivery method for middleware ('cookie' or 'header')
     protected $deliver;
 
+    // should the token be delivered by the middleware
     protected $shouldDeliver;
 
 
-    public function __construct($name, JWTAuth $jwt, $provider, array $driver = [])
+    public function __construct($name, JWTAuth $jwt, $provider)
     {
         $this->name = $name;
         $this->jwt = $jwt;
@@ -66,6 +66,9 @@ class JWTGuard implements Guard
         $this->deliver = $this->config('deliver', null);
     }
 
+    /**
+     * Get the current token from the guard
+     */
     public function token()
     {
         if ($this->loggedOut) {
@@ -87,6 +90,9 @@ class JWTGuard implements Guard
         return $token;
     }
 
+    /**
+     * Get the current token from the JWTManager (request)
+     */
     protected function getToken()
     {
         try {
@@ -99,9 +105,8 @@ class JWTGuard implements Guard
 
     /**
      * Get the currently authenticated user.
-     *
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
+
     public function user()
     {
         if ($this->loggedOut) {
@@ -115,6 +120,7 @@ class JWTGuard implements Guard
         if (! $token = $this->token()) {
             return null;
         }
+
         if (! $user = $this->authenticate($token)) {
             return null;
         }
@@ -124,6 +130,9 @@ class JWTGuard implements Guard
         return $user;
     }
 
+    /**
+     * Get the authenticated user from the token.
+     */
     protected function authenticate($token)
     {
         try {
@@ -147,11 +156,14 @@ class JWTGuard implements Guard
         return $user;
     }
 
+    /**
+     * Login a user using credentials
+     */
     public function attempt(array $credentials = [])
     {
         $this->lastAttempted = $user = $this->provider->retrieveByCredentials($credentials);
 
-        if ($this->hasValidCredentials($user, $credentials)) {
+        if ($user && $this->hasValidCredentials($user, $credentials)) {
             $this->login($user);
 
             $this->fireLoginEvent($user, $credentials);
@@ -166,9 +178,8 @@ class JWTGuard implements Guard
 
     public function refresh()
     {
-        \Log::info("REFRESH");
         try {
-            return $this->refreshToken($this->token();
+            return $this->refreshToken($this->token());
         } catch (TokenExpiredException $e) {
             $this->removeToken();
             return null;
@@ -187,7 +198,6 @@ class JWTGuard implements Guard
     protected function refreshToken($token)
     {
         try {
-            \Log::info("OLD TOKEN ". $token);
             $this->removeToken();
             $this->refreshAttempted = true;
             $newToken = $this->jwt->refresh($token);

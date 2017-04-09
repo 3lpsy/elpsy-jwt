@@ -2,6 +2,7 @@
 
 return [
     'deliver' => 'header',
+    'debug' => true,
     'header' => [
         'name' => 'Authorization',
         'prefix' => 'Bearer '

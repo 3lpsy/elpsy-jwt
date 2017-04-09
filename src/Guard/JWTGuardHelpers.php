@@ -9,8 +9,6 @@ trait JWTGuardHelpers
 
     /**
      * Determine if the current user is authenticated.
-     *
-     * @return bool
      */
     public function check()
     {
@@ -19,8 +17,6 @@ trait JWTGuardHelpers
 
     /**
      * Determine if the current user is a guest.
-     *
-     * @return bool
      */
     public function guest()
     {
@@ -29,8 +25,6 @@ trait JWTGuardHelpers
 
     /**
      * Get the ID for the currently authenticated user.
-     *
-     * @return int|null
      */
     public function id()
     {
@@ -41,9 +35,6 @@ trait JWTGuardHelpers
 
     /**
      * Set the current user.
-     *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     * @return void
      */
     public function setUser(Authenticatable $user)
     {
@@ -52,10 +43,7 @@ trait JWTGuardHelpers
     }
 
     /**
-     * Set the current user.
-     *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     * @return void
+     * Remove the user from the guard.
      */
     public function removeUser()
     {
@@ -64,16 +52,17 @@ trait JWTGuardHelpers
     }
 
     /**
-     * Set the current user.
-     *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     * @return void
+     * Set the token on the guard.
      */
     public function setToken($token)
     {
         $this->token = $token;
         return $this;
     }
+
+    /**
+     * Remove the token on the guard.
+     */
 
     public function removeToken()
     {
@@ -83,9 +72,6 @@ trait JWTGuardHelpers
 
     /**
      * Validate a user's credentials.
-     *
-     * @param  array  $credentials
-     * @return bool
      */
     public function validate(array $credentials = [])
     {
@@ -95,6 +81,10 @@ trait JWTGuardHelpers
 
         return !! $token;
     }
+
+    /**
+     * Validate credentials against a user
+     */
 
     protected function hasValidCredentials($user, $credentials)
     {
