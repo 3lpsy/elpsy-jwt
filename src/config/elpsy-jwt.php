@@ -2,6 +2,7 @@
 
 return [
     'deliver' => 'header',
+    'guard' => 'api',
     'header' => [
         'name' => 'Authorization',
         'prefix' => 'Bearer '
