@@ -232,4 +232,15 @@ class JWTGuard implements Guard
 
         $this->shouldDeliver = true;
     }
+
+    public function onceUsingId($id)
+    {
+        if (! is_null($user = $this->provider->retrieveById($id))) {
+            $this->setUser($user);
+
+            return $user;
+        }
+
+        return false;
+    }
 }
